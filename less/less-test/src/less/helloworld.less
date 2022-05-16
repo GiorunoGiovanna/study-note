@@ -1,0 +1,173 @@
+// 定义变量，可以定义属性名，选择器和属性值
+//注意：属性名选择器在使用的时候要以@{name}的方式，而属性值在使用的时候只需要@name就可以
+// @pos: position;
+// @a:.a;
+// @rel:relative;
+// @{a} {
+//   @{pos}: @rel;
+//   width: 50vw;
+//   height: 50vh;
+//   border: 1px black solid;
+//   .b {
+//     @{pos}: absolute;
+//     left: 0;
+//     right: 0;
+//     top: 0;
+//     bottom: 0;
+//     margin: auto;
+//     width: 50%;
+//     height: 50%;
+//     background-color: pink;
+//   }
+// }
+
+
+
+
+//变量的延迟加载
+//在less中变量都是块级作用域，且具有延迟加载的特点，即无论定义同一个变量几次，都以最后一次为准
+// @a:red;
+// .a{
+//   @a:pink;
+//   width: 100px;
+//   height: 100px;
+//   background-color: @a;
+//   @a:blue;
+//   .b{
+//     @a:yellow;
+//     width: 50px;
+//     height: 50px;
+//     background-color:@a; 
+//   };
+// }
+
+
+// 嵌套规则
+//在less中直接使用伪类会被认为是父子嵌套关系，想要为元素添加伪类要加上&
+// @pos: position;
+// @a:.a;
+// @rel:relative;
+// @{a} {
+//   @{pos}: @rel;
+//   width: 50vw;
+//   height: 50vh;
+//   border: 1px black solid;
+//   .b {
+//     @{pos}: absolute;
+//     left: 0;
+//     right: 0;
+//     top: 0;
+//     bottom: 0;
+//     margin: auto;
+//     width: 50%;
+//     height: 50%;
+//     background-color: pink;
+//     &:hover{
+//       background-color: rgb(197, 34, 61);
+//     }
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//变量用法
+// @a: .a;
+// @pos: position;
+// @color: pink;
+
+// @{a} {
+//   @{pos}: relative;
+//   background-color: @color;
+// }
+//变量延迟加载
+//嵌套规则。使用&会被视为同一层
+
+//混合mixin
+//带参数的混合
+//命名参数
+//匹配模式
+//arguments
+// .center(@_) {
+//   width: 100px;
+//   height: 100px;
+// }
+
+// .center(Relative, @pos, @color) {
+//   @{pos}: relative;
+//   background-color: @color;
+// }
+
+// .center(Absolute, @pos, @color) {
+//   @{pos}: absolute;
+//   background-color: @color;
+//   margin-top: 100px;
+// }
+
+// .a {
+//   .center(Absolute, position, @color: pink);
+// }
+
+
+//继承
+// .center {
+//   width: 100px;
+//   height: 100px;
+//   position: relative;
+// }
+
+// .a:extend(.center) {
+//   left: 60px;
+// }
+
+//避免编译
+.center {
+  width: ~'calc(100+100px)';
+}

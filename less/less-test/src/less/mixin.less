@@ -1,0 +1,199 @@
+//mixin混入，在css开发中往往涉及到很多标签需要用到相同的一段代码
+//这个时候我们就可以利用mixin混合去定义一段可复用的代码
+//小贴士：在混合的代码中加上一个（）可以避免被编译到css中
+// .position-center () {
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 25%;
+//   height: 25%;
+// }
+
+// .a {
+//   position: relative;
+//   width: 50vw;
+//   height: 50vh;
+//   border: 1px black solid;
+
+//   .b {
+//     .position-center;
+//     left: 30vw;
+//     background-color: pink;
+
+//     &:hover {
+//       background-color: rgb(197, 34, 61);
+//     }
+//   }
+
+//   .c {
+//     .position-center;
+//     left: -30vw;
+//     background-color: black;
+
+//     &:hover {
+//       background-color: rgb(197, 34, 61);
+//     }
+//   }
+// }
+
+
+//带参数的混合，可以把less中的混合当作函数使用，就是可以传入参数使用
+//还可以给他默认值,在使用混合的时候可以指定参数的变量（命名参数）
+// .position-center (@left: 30vw, @color: black) {
+//   position: absolute;
+//   right: 0;
+//   left: @left;
+//   top: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 25%;
+//   height: 50%;
+//   background-color: @color;
+// }
+
+// .a {
+//   position: relative;
+//   width: 50vw;
+//   height: 50vh;
+//   border: 1px black solid;
+
+//   .b {
+//     .position-center(@color: pink);
+
+//     &:hover {
+//       background-color: rgb(197, 34, 61);
+//     }
+//   }
+
+//   .c {
+//     .position-center(-30vw);
+
+//     &:hover {
+//       background-color: rgb(197, 34, 61);
+//     }
+//   }
+// }
+
+
+
+//匹配模式
+//引入混入的时候，可以把第一个参数当作标识符，从而创建多个同名的mixin
+// @import url(./mode.less);
+
+// .a {
+// .square(B, pink)
+// }
+
+
+
+
+
+
+//arguments,就是参数列表
+// .border(@width, @style, @color) {
+//   border: @arguments;
+// }
+
+// .a {
+//   height: 60px;
+//   .border(2px, solid, blue)
+// }
+
+
+
+
+//less计算
+// @moduleLength: 100px;
+
+// .a {
+//   height: (@moduleLength+100px);
+//   background-color: pink;
+// }
+
+//避免编译
+//在less中如果使用了css原生的计算属性，且不希望编译器自动编译（留到浏览器编译去）
+// 可以使用~“”将整个表达式直接传入css而不编译
+
+
+//less继承,可以用于优化，注意，继承只能继承类，不能继承混合
+//在要继承的类面加上all可以把lei相关的为元素，伪类等一并继承
+// .center {
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 25%;
+//   height: 25%;
+// }
+
+// .a {
+//   .b :extend(.center) {
+//     left: 30%;
+//     background-color: BLUE;
+//   }
+
+//   .c :extend(.center) {
+//     left: -30%;
+//     background-color: pink;
+//   }
+// }
+
+//混合写法编译结果，把应该重用的部分分开在每个标签里，这样其实浪费了空间
+// .a {
+//   position: relative;
+//   width: 50vw;
+//   height: 50vh;
+//   border: 1px solid black;
+// }
+// .a .b {
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 25%;
+//   height: 25%;
+//   left: 30%;
+//   background-color: BLUE;
+// }
+// .a .c {
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 25%;
+//   height: 25%;
+//   left: -30%;
+//   background-color: pink;
+// }
+
+// 使用继承写法后，所有继承了这段代码的属性都会共用这段代码
+// .center,
+// .a .b,
+// .a .c {
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 25%;
+//   height: 25%;
+// }
+// .a {
+//   position: relative;
+//   width: 50vw;
+//   height: 50vh;
+//   border: 1px solid black;
+// }
+// .a .b {
+//   left: 30%;
+//   background-color: BLUE;
+// }
+// .a .c {
+//   left: -30%;
+//   background-color: pink;
+// }

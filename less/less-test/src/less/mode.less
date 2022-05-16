@@ -1,0 +1,16 @@
+.square(@_) {
+    width: 0px;
+    height: 0px;
+}
+
+.square(B, @color) {
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 40px solid @color;
+}
+
+.square(T, @color) {
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-top: 40px solid @color;
+}
