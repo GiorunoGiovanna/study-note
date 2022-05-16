@@ -1,0 +1,111 @@
+<div id="app">
+    <h3 @click="add">{{counter}}</h3>
+</div>
+
+<script src="http://unpkg.com/vue@next"></script>
+<script src="http://unpkg.com/vuex@next"></script>
+<script>
+    const { ref, reactive, computed, watchEffect } = Vue
+    // const { createStore, useStore } = Vuex
+
+    const MiniVue = {
+        createApp(options) {
+            const app = {
+                mount(selector) {
+                    const parent = document.querySelector(selector)
+                    const ctx = options.setup()
+
+                    watchEffect(() => {
+                        const el = options.render.call(ctx)
+                        parent.innerHTML = ''
+                        parent.appendChild(el)
+                    })
+                },
+                //实现use方法，在实例上使用插件
+                use(plugin, ...options) {
+                    if (plugin && typeof plugin.install === 'function') {
+                        plugin.install(app, ...options)
+                    } else {
+                        console.warn('请传入plugin对象，并且提供和一个install方法')
+                    }
+                    plugin.install(app)
+                }
+            }
+            return app
+        }
+    }
+
+    const map = []
+    //创建Store类
+    class Store {
+        constructor(options) {
+            //状态树直接使用reactive令他变为响应式的
+            this._state = reactive({
+                data: options.state
+            })
+            //获取修改状态的方法mutations
+            this._mutations = options.mutations
+        }
+        get state() {
+            return this._state.data
+        }
+        //mutations的提交方法
+        commit(type, payload) {
+            const entry = this._mutations[type]
+            if (!entry) {
+                console.error('mutitaion不存在')
+            }
+            entry(this.state, payload)
+        }
+        //通过install在app上进行扩展插件的操作
+        install(app, injectKey) {
+            //扩展app
+            //为app全局挂载上$store
+            // app.config.globalProperties.$store = this
+            // provide('store', this)
+            map[injectKey || 'store'] = this
+        }
+    }
+
+    function createStore(options) {
+        return new Store(options)
+    }
+
+    function useStore(key = null) {
+        // return inject('store')
+        return map[key !== null ? key : 'store']
+    }
+
+    const app = MiniVue.createApp({
+        setup() {
+            const counter = ref(1)
+            const add = () => {
+                counter.value++
+            }
+            return {
+                counter, add
+            }
+        },
+        render() {
+            const h3 = document.createElement('h3')
+            h3.innerHTML = this.counter.value
+            h3.addEventListener('click', this.add)
+            return h3
+        },
+    })
+
+    //创建store实例
+    const store = createStore({
+        state: {
+            counter: 1
+        },
+        mutations: {
+            add(state) {
+                state.counter++
+            }
+        }
+    })
+    //在app实例挂载之前use插件
+    app.use(store)
+    app.mount('#app')
+</script>
